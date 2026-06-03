@@ -1,9 +1,10 @@
-from rest_framework import serializer
+from rest_framework import serializers
 from .models import Task 
+from django.utils import timezone
 
 
 
-class TaskSerializer(serializer.ModelSerializer):
+class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
@@ -16,10 +17,20 @@ class TaskSerializer(serializer.ModelSerializer):
             )
         
 
+    def validate_due_date(self, value):
+
+        if value and value < timezone.now().date():
+            raise serializers.ValidationError(
+                "過去の日付は設定できません"
+            )
+
+        return value
+        
+
     def create(self, validated_data):
 
         validated_data['user'] = self.context['request'].user
 
-        return super().create(**validated_data)
+        return super().create(validated_data)
         
 
