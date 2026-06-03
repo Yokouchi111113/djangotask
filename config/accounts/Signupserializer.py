@@ -24,7 +24,7 @@ class SignupSerializer(serializer.ModelSerializer):
 
             return attrs
         
-    def create(self, validated_data):
+    def create(self, validated_data):#password2がDBに存在しないとは？一連の解説。そもそもserializerとは？
 
         validated_data.pop("password2")
 
