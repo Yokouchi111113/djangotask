@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 
 urlpatterns = [
-    path("accounts/", include("accounts.urls")),
-    path("", include("task.urls")),
+    path("api/", include("accounts.urls")),
+    path("api/", include("task.urls")),
     path('task-control-admin/', admin.site.urls),
 ]

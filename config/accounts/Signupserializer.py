@@ -38,12 +38,8 @@ class SignupSerializer(serializers.ModelSerializer):
 
         validated_data.pop("password2")
 
-        user = CustomUser(
-            email=validated_data["email"],
-            display_name=validated_data.get("display_name", "")
+        return CustomUser.objects.create_user(
+        email=validated_data["email"],
+        password=validated_data["password1"],
+        display_name=validated_data.get("display_name", "")
         )
-        #passwordをハッシュ化し保存
-        user.set_password(validated_data["password"])
-        user.save()
-
-        return user
