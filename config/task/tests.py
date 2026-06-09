@@ -16,7 +16,7 @@ def test_task_create_requires_authentication():
     assert res.status_code == 401
 
 
-def test_task_get_requires_authentication():
+def test_task_list_requires_authentication():
     client = APIClient()
 
     res = client.get(
@@ -26,11 +26,39 @@ def test_task_get_requires_authentication():
     assert res.status_code == 401
 
 
-def test_task_delete_requires_authentication():
+def test_task_detail_requires_authentication(task_factory, user):
     client = APIClient()
 
+    task = task_factory(user)
+
+    res = client.get(
+        f"/api/tasks/{task.id}/"
+    )
+
+    assert res.status_code == 401
+
+
+def test_task_patch_requires_authentication(task_factory, user):
+    client = APIClient()
+
+    task = task_factory(user)
+
+    res = client.patch(
+        f"/api/tasks/{task.id}/",
+        {"title": "updated"},
+        format="json",
+    )
+
+    assert res.status_code == 401
+
+
+def test_task_delete_requires_authentication(task_factory, user):
+    client = APIClient()
+
+    task = task_factory(user)
+
     res = client.delete(
-        "/api/tasks/2/"
+        f"/api/tasks/{task.id}/"
     )
 
     assert res.status_code == 401
@@ -171,7 +199,7 @@ def auth_client():
     
     return _auth_client
 
-
+# 別のユーザーのタスクを取得できるか
 def test_user_cannot_access_other_users_task(
     auth_client,
     user,
@@ -187,3 +215,40 @@ def test_user_cannot_access_other_users_task(
     )
 
     assert res.status_code == 404
+
+# 別のユーザーのタスクを編集できるか
+def test_user_cannot_patch_other_users_task(
+        auth_client,
+        user,
+        user_b,
+        task_factory,
+):
+    task = task_factory(user)
+
+    client = auth_client(user_b, "password147")
+
+    res = client.patch(
+        f"/api/tasks/{task.id}/",
+        {"title": "updated"},
+        format="json",
+    )
+
+    assert res.status_code == 404
+
+
+def test_user_cannot_delete_other_users_task(
+        auth_client,
+        user,
+        user_b,
+        task_factory,
+):
+    task = task_factory(user)
+
+    client = auth_client(user_b, "password147")
+
+    res = client.delete(
+        f"/api/tasks/{task.id}/"
+    )
+
+    assert res.status_code == 404
+
