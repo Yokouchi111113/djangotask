@@ -2,6 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 from accounts.models import CustomUser
 from task.models import Task
+from freezegun import freeze_time
 
 # 認証なし
 def test_task_create_requires_authentication():
@@ -9,7 +10,8 @@ def test_task_create_requires_authentication():
 
     res = client.post(
         "/api/tasks/",
-        {"title": "task", "status": "todo"},
+        {"title": "task", 
+         "status": "todo"},
         format="json",
     )
 
@@ -167,11 +169,19 @@ def user_b(db):
 #タスク作成
 @pytest.fixture
 def task_factory():
-    def _task(user):
+    def _task(
+        user,
+        title="DRF勉強",
+        description="",
+        status="doing",
+        due_date=None,
+    ):
         return Task.objects.create(
-            title="DRF",
-            status="doing",
-            user=user
+            title=title,
+            description=description,
+            status=status,
+            due_date=due_date,
+            user=user,
         )
     return _task
 
@@ -234,6 +244,8 @@ def test_user_cannot_patch_other_users_task(
     )
 
     assert res.status_code == 404
+    task.refresh_from_db()
+    assert task.title != "updated"
 
 
 def test_user_cannot_delete_other_users_task(
@@ -251,4 +263,371 @@ def test_user_cannot_delete_other_users_task(
     )
 
     assert res.status_code == 404
+    assert Task.objects.filter(id=task.id).exists()
+
+
+def test_task_create_requires_title(
+    auth_client,
+    user,
+):
+    client = auth_client(user, "password123")
+
+    res = client.post(
+        "/api/tasks/",
+        {"title": "", 
+         "status": "todo"},
+        format="json",
+    )
+
+    assert res.status_code == 400
+
+def test_task_create_requires_status(
+    auth_client,
+    user,
+):
+    client = auth_client(user, "password123")
+
+    res = client.post(
+        "/api/tasks/",
+        {"title": "DRF勉強", 
+         "status": ""},
+        format="json",
+    )
+
+    assert res.status_code == 400
+
+def test_task_create_requires(
+    auth_client,
+    user,
+):
+    client = auth_client(user, "password123")
+
+    res = client.post(
+        "/api/tasks/",
+        {"title": "", 
+         "status": ""},
+        format="json",
+    )
+
+    assert res.status_code == 400
+
+def test_task_create_due_date(
+        auth_client,
+        user
+):
+    client = auth_client(user, "password123")
+
+    res = client.post(
+        "/api/tasks/",
+        {"title": "DRF勉強", 
+         "status": "doing",
+         "due_date": "2000-01-01"},
+        format="json",
+    )
+
+    assert res.status_code == 400
+
+def test_task_create_due_date_success(
+        auth_client,
+        user
+):
+    client = auth_client(user, "password123")
+
+    res = client.post(
+        "/api/tasks/",
+        {"title": "DRF勉強", 
+         "status": "doing",
+         "due_date": "2111-01-01"},
+        format="json",
+    )
+
+    assert res.status_code == 201
+
+
+def test_user_can_only_see_own_tasks(
+        auth_client,
+        user,
+        user_b,
+        task_factory,
+):
+    task_factory(user)
+    task_factory(user_b)
+
+    client = auth_client(user, "password123")
+
+    res = client.get(
+        "/api/tasks/"
+    )
+
+    assert res.status_code == 200
+    assert len(res.data) == 1
+    assert res.data[0]["title"] == "DRF勉強"
+
+
+def test_user_can_get_own_task(
+    auth_client,
+    user,
+    task_factory,
+):
+    task = task_factory(user)
+
+    client = auth_client(user, "password123")
+
+    res = client.get(
+        f"/api/tasks/{task.id}/"
+    )
+
+    assert res.status_code == 200
+    assert res.data["title"] == "DRF勉強"
+    assert res.data["status"] == "doing"
+
+
+def test_user_can_patch_own_task(
+    auth_client,
+    user,
+    task_factory,
+):
+    task = task_factory(user)
+
+    client = auth_client(user, "password123")
+
+    res = client.patch(
+        f"/api/tasks/{task.id}/",
+        {"title": "updated"},
+        format="json",
+    )
+
+    assert res.status_code == 200
+    assert res.data["title"] == "updated"
+    task.refresh_from_db()
+    assert task.title == "updated"
+
+
+def test_user_can_delete_own_task(
+    auth_client,
+    user,
+    task_factory,
+):
+    task = task_factory(user)
+
+    client = auth_client(user, "password123")
+
+    res = client.delete(
+        f"/api/tasks/{task.id}/"
+    )
+
+    assert res.status_code == 204
+    assert not Task.objects.filter(id=task.id).exists()
+
+
+def test_task_detail_not_found(
+    auth_client,
+    user,
+):
+    client = auth_client(user, "password123")
+
+    res = client.get(
+        "/api/tasks/99999/"
+     )
+
+    assert res.status_code == 404
+
+def test_task_patch_not_found(
+    auth_client,
+    user,
+):
+    client = auth_client(user, "password123")
+
+    res = client.patch(
+        "/api/tasks/99999/",
+        {"title": "updated"},
+        format="json",
+        )
+
+    assert res.status_code == 404
+
+def test_task_delete_not_found(
+    auth_client,
+    user,
+):
+    client = auth_client(user, "password123")
+
+    res = client.delete(
+        "/api/tasks/99999/"
+        )
+
+    assert res.status_code == 404
+
+
+def test_task_status_choice_no_exists(
+    auth_client,
+    user,
+):
+    client = auth_client(user, "password123")
+
+    res = client.post(
+        "/api/tasks/",
+        {
+            "title": "DRF",
+            "status": "complete"
+        },
+        format="json",
+        )
+
+    assert res.status_code == 400
+
+
+@freeze_time("2026-06-11")
+def test_filter_due_within_7_days(auth_client, user):
+    client = auth_client(user, "password123")
+
+    client.post(
+        "/api/tasks/",
+        {
+            "title": "today",
+            "status": "doing",
+            "due_date": "2026-06-11",
+        },
+        format="json",
+    )
+
+    client.post(
+        "/api/tasks/",
+        {
+            "title": "limit",
+            "status": "doing",
+            "due_date": "2026-06-18",
+        },
+        format="json",
+    )
+
+    client.post(
+        "/api/tasks/",
+        {
+            "title": "over",
+            "status": "doing",
+            "due_date": "2026-06-19",
+        },
+        format="json",
+    )
+
+    res = client.get(
+        "/api/tasks/?due_within=7"
+        )
+
+    assert res.status_code == 200
+    assert len(res.data) == 2
+
+    titles = [task["title"] for task in res.data]
+
+    assert "today" in titles
+    assert "limit" in titles
+    assert "over" not in titles
+
+
+# 検索 title
+def test_search_by_title(
+    auth_client,
+    user,
+    task_factory,
+):
+    task_factory(
+        user, 
+        title="DRF勉強"
+        )
+    task_factory(
+        user, 
+        title="Python勉強"
+        )
+
+    client = auth_client(user, "password123")
+
+    res = client.get(
+        "/api/tasks/?q=DRF"
+        )
+
+    assert res.status_code == 200
+    assert len(res.data) == 1
+    assert res.data[0]["title"] == "DRF勉強"
+
+# 検索 description
+def test_search_by_description(
+    auth_client,
+    user,
+    task_factory,
+):
+    task_factory(
+        user, 
+        title="テスト1",
+        description="Django REST Framework"
+        )
+    task_factory(
+        user, 
+        title="タスク2",
+        description="Playwright"
+        )
+
+    client = auth_client(user, "password123")
+
+    res = client.get(
+        "/api/tasks/?q=Django"
+        )
+    
+    assert res.status_code == 200
+    assert len(res.data) == 1
+    assert res.data[0]["description"] == "Django REST Framework"
+
+# &検索
+def test_search_by_multiple_words(
+    auth_client,
+    user,
+    task_factory,
+):
+    task_factory(
+        user, 
+        title="DRF勉強",
+        description="Django REST Framework"
+        )
+    task_factory(
+        user, 
+        title="DRF勉強",
+        description="Playwright"
+        )
+    
+    client = auth_client(user, "password123")
+    
+    res = client.get(
+        "/api/tasks/?q=DRF REST"
+    )
+
+    assert res.status_code == 200
+    assert len(res.data) == 1
+    assert res.data[0]["description"] == "Django REST Framework"
+
+
+def test_search_by_q_none(
+    auth_client,
+    user,
+    task_factory,
+):
+    task_factory(
+        user, 
+        title="DRF勉強",
+        description="Django REST Framework"
+        )
+    task_factory(
+        user, 
+        title="DRF勉強",
+        description="Playwright"
+        )
+    
+    client = auth_client(user, "password123")
+    
+    res = client.get(
+        "/api/tasks/?q="
+    )
+
+    assert res.status_code == 200
+    assert len(res.data) == 2
+
 
