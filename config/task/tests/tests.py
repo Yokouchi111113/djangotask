@@ -2,6 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 from accounts.models import CustomUser
 from task.models import Task
+from datetime import date
 from freezegun import freeze_time
 
 # 認証なし
@@ -296,7 +297,7 @@ def test_task_create_requires_status(
 
     assert res.status_code == 400
 
-def test_task_create_requires(
+def test_task_create_requires_title_status_none(
     auth_client,
     user,
 ):
@@ -630,4 +631,107 @@ def test_search_by_q_none(
     assert res.status_code == 200
     assert len(res.data) == 2
 
+def test_search_by_q_none(
+    auth_client,
+    user,
+    user_b,
+    task_factory,
+):
+    task_factory(
+        user, 
+        title="DRF勉強",
+        description="Django REST Framework"
+        )
+    task_factory(
+        user_b, 
+        title="DRF勉強",
+        description="Django REST Framework"
+        )
+    
+    client = auth_client(user, "password123")
+    
+    res = client.get(
+        "/api/tasks/?q=DRF"
+    )
+
+    assert res.status_code == 200
+    assert len(res.data) == 1
+
+def test_search_by_pointless_word(
+    auth_client,
+    user,
+    user_b,
+    task_factory,
+):
+    task_factory(
+        user, 
+        title="DRF勉強",
+        description="Django REST Framework"
+        )
+    task_factory(
+        user_b, 
+        title="DRF勉強",
+        description="Django REST Framework"
+        )
+    
+    client = auth_client(user, "password123")
+    
+    res = client.get(
+        "/api/tasks/?q=54782514567"
+    )
+
+    assert res.status_code == 200
+    assert len(res.data) == 0
+
+
+
+def test_task_patch_invalid_status(
+    auth_client,
+    user,
+    task_factory,
+):
+    task = task_factory(user)
+
+    client = auth_client(user, "password123")
+
+    res = client.patch(
+        f"/api/tasks/{task.id}/",
+        {"status": "complete"},
+        format="json",
+    )
+    
+    assert res.status_code == 400
+    task.refresh_from_db()
+    assert task.status != "complete"
+
+
+def test_task_str(
+    task_factory, 
+    user
+):
+    task = task_factory(user, title="DRF勉強")
+
+    assert str(task) == "DRF勉強"
+
+
+@freeze_time("2026-06-11")
+def test_days_until_due(
+    user, 
+    task_factory
+):
+    task = task_factory(
+        user,
+        due_date=date(2026, 6, 18)
+    )
+
+    assert task.days_until_due == 7
+
+
+def test_days_until_due_none(user, task_factory):
+    task = task_factory(
+        user,
+        due_date=None
+    )
+
+    assert task.days_until_due is None
 
