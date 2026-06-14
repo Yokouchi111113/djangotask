@@ -12,33 +12,21 @@
 <body>
   <header>
     <div class="basetitle">
-      <a href="{% url 'task_combined' %}">タスク管理</a>
+      <a href="{% url 'task_list' %}">タスク管理</a>
     </div>
 
      <!-- ナビゲーションバー -->
     <nav class="nav-bar">
         <ul>
-            <li><a href="{% url 'task_combined' %}">ホーム</a></li>
-            <li><a href="{% url 'task_combined' %}">このアプリについて</a></li>
-            <li><a href="{% url 'task_combined' %}">サービス</a></li>
-            <li><a href="{% url 'task_combined' %}">お問い合わせ</a></li>
+            <li><a href="{% url 'task_list' %}">Tasks</a></li>
+            <li><a href="{% url 'task_list' %}">Create Task</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'signin' %}">Login</a></li>
+            {% endif %}
         </ul>
     </nav>
-    <!-- 検索フォーム -->
-    <form action="" method="get">
-      <input type="search" name="q" placeholder="タスク検索" value="{{ request.GET.q }}">
-      <button type="submit">検索</button>
-    </form>
-    {% if user.is_authenticated %}
-          <form class="loginout" action="{% url 'logout' %}" method="POST">
-            {% csrf_token %}
-            <button>ログアウト</button>
-          </form>
-        {% else %}
-          <a href="{% url 'login' %}">ログイン</a>
-        {% endif %}
-
-
 
   </header>
     <main>

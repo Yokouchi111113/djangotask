@@ -142,8 +142,8 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'task_api'   # ログイン後に飛ばしたいurl名を書く
+LOGIN_URL = 'signin'
+LOGIN_REDIRECT_URL = 'tasks'   # ログイン後に飛ばしたいurl名を書く
 LOGOUT_REDIRECT_URL = 'login'
 
 

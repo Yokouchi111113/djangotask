@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>タスク管理</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="{% static 'task/static/task/style.css' %}">
+</head>
+<body>
+    <main>
+      {% block content %}
+      <h1>Sign In</h1>
+
+      <form>
+          <input type="email" placeholder="Email">
+          <input type="password" placeholder="Password">
+          <button type="submit">Login</button>
+      </form>
+      {% endblock %}
+    </main>
+</body>
+</html>

@@ -5,7 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from datetime import timedelta
 from django.utils import timezone
-
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class TaskViewSet(viewsets.ModelViewSet):
 
@@ -48,3 +49,12 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class TaskListView(LoginRequiredMixin, ListView):
+    model = Task
+    template_name = 'task/task_list.html'
+
+class TaskDetailView(LoginRequiredMixin, DetailView):
+    model = Task
+    template_name = 'task/task_detail.html'
