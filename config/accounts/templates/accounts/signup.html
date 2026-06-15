@@ -1,15 +1,24 @@
 {% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-    <body>
 
+{% block content %}
+<h1 class="signup" >Sign Up</h1>
 
+<form id="signup-form">
+    <label>メールアドレス</label>
+    <input type="email" id="signup-email" name="email" required>
 
+    <label>アカウント名</label>
+    <input type="text" id="signup-display-name" name="display-name">
 
+    <label>パスワード</label>
+    <input type="password" id="signup-password1" name="password1" required>
 
-    </body>
+    <label>パスワード（確認）</label>
+    <input type="password" id="signup-password2" name="password2" required>
 
+    <button type="submit">登録</button>
+</form>
 
-
-</html>
+<p id="message"></p>
+{% endblock %}

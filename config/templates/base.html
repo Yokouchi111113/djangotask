@@ -19,11 +19,10 @@
     <nav class="nav-bar">
         <ul>
             <li><a href="{% url 'task_list' %}">Tasks</a></li>
-            <li><a href="{% url 'task_list' %}">Create Task</a></li>
             {% if user.is_authenticated %}
-                <li><a href="{% url 'logout' %}">Logout</a></li>
+            <li><a href="{% url 'logout' %}">signout</a></li>
             {% else %}
-                <li><a href="{% url 'signin' %}">Login</a></li>
+            <li><a href="{% url 'signin' %}">signin</a></li>
             {% endif %}
         </ul>
     </nav>
