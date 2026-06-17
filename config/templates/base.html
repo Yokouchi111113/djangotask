@@ -18,12 +18,11 @@
      <!-- ナビゲーションバー -->
     <nav class="nav-bar">
         <ul>
-            <li><a href="{% url 'task_list' %}">Tasks</a></li>
-            {% if user.is_authenticated %}
-            <li><a href="{% url 'logout' %}">signout</a></li>
-            {% else %}
-            <li><a href="{% url 'signin' %}">signin</a></li>
-            {% endif %}
+          <li><a href="{% url 'task_list' %}">Tasks</a></li>
+
+          <li><a href="{% url 'signin' %}" id="signin-link">signin</a></li>
+
+          <li><a href="#" id="signout-link">signout</a></li>
         </ul>
     </nav>
 
@@ -34,5 +33,6 @@
     </main>
     <footer>
     </footer>
+<script src="{% static 'js/base.js' %}"></script>
 </body>
 </html>

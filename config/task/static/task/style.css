@@ -6,13 +6,11 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-around;
+    background-color: beige;
 }
 
 .basetitle a {
     font-size: 30px;
-}
-
-.basetitle a {
     text-decoration: none;
     color: inherit;
 }

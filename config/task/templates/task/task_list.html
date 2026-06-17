@@ -3,6 +3,33 @@
 
 {% block content %}
 
+<!-- 検索フォーム -->
+<div class="search">
+<form id="search-form">
+    <input id="search" type="search" name="q"
+           placeholder="タスク検索">
+
+    <input id="due-within" type="number"
+           name="due_within">
+
+    <button type="submit">検索</button>
+</form>
+</div>
 
 
+<form id="task-form">
+    <input type="text" id="title" placeholder="タイトル" required>
+    <textarea id="description" placeholder="詳細を記載してください"></textarea>
+    <button type="submit">作成</button>
+</form>
+
+
+
+
+
+
+<div id="task-list"></div>
+
+<script src="{% static 'js/auth.js' %}"></script>
+<script src="{% static 'js/task.js' %}"></script>
 {% endblock %}

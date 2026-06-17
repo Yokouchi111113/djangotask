@@ -20,6 +20,3 @@ class SignupTemplateView(TemplateView):
     template_name = "accounts/signup.html"
 
 
-class LogoutView(View):
-    def get(self, request):
-        return redirect("login")
