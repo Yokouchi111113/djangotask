@@ -5,7 +5,9 @@ document
 async function signup(e) {
     e.preventDefault();
 
-    const email = document.getElementById("signup-email").value;
+    const email = document.getElementById(
+        "signup-email"
+    ).value;
     const displayName = document.getElementById(
         "signup-display-name"
     ).value;

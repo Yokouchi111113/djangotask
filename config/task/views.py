@@ -6,7 +6,7 @@ from django.db.models import Q
 from datetime import timedelta
 from django.utils import timezone
 from django.views.generic import TemplateView
-
+from rest_framework.exceptions import ValidationError
 
 class TaskViewSet(viewsets.ModelViewSet):
 
@@ -33,6 +33,11 @@ class TaskViewSet(viewsets.ModelViewSet):
         if due_within:
             try:
                 days = int(due_within)
+
+                if days < 0:
+                    raise ValidationError(
+                        {"due_within": "0以上の値を指定してください。"}
+                    )
 
                 today = timezone.localdate()
                 limit_date = today + timedelta(days=days)
