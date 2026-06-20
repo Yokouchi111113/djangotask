@@ -1,3 +1,6 @@
+let currentTasks = [];
+let editingTaskId = null;
+
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("access");
 
@@ -15,10 +18,16 @@ document.addEventListener("DOMContentLoaded", () => {
     document
         .getElementById("task-form")
         .addEventListener("submit", createTask);
+
+    document
+        .getElementById("cancel-edit-btn")
+        .addEventListener("click", exitEditMode);
 });    
 
 // 表示
 function renderTasks(tasks) {
+    currentTasks = tasks;
+
     const taskList = document.getElementById("task-list");
     taskList.innerHTML = "";
 
@@ -34,10 +43,15 @@ function renderTasks(tasks) {
                 <h3>${task.title}</h3>
                 <p>${task.description}</p>
                 <p>${task.status}</p>
+                <p>${task.due_date}</p>
+                <button onclick="startEdit(${task.id})">
+                    編集
+                </button>
             </div>
         `;
     });
 }
+
 
 // 取得
 async function loadTasks() {
@@ -56,7 +70,6 @@ async function loadTasks() {
     const tasks = await res.json();
     renderTasks(tasks);
 
-    taskList.innerHTML = "";
 }
 
 
@@ -84,7 +97,29 @@ async function searchTasks(e) {
     renderTasks(tasks);
 }
 
-// 作成
+
+function startEdit(taskId) {
+
+    const task = currentTasks.find(
+        t => t.id === taskId
+    );
+
+    document.getElementById("title").value =
+        task.title;
+
+    document.getElementById("description").value =
+        task.description;
+
+    document.getElementById("due_date").value =
+        task.due_date || "";
+
+    editingTaskId = task.id;
+
+    enterEditMode();
+}
+
+
+// 作成　と　編集
 async function createTask(e) {
     e.preventDefault();
 
@@ -93,19 +128,62 @@ async function createTask(e) {
 
     const description =
         document.getElementById("description").value;
+    
+    const due_date = 
+        document.getElementById("due_date").value;
 
-    const res = await authFetch("/api/tasks/", {
-        method: "POST",
-        body: JSON.stringify({
-            title,
-            description,
-        }),
-    });
+    const taskDate = {
+        title,
+        description,
+        due_date,
+    };
+
+    let res;
+
+    if (editingTaskId !== null) {
+        res = await authFetch(
+            `/api/tasks/${editingTaskId}/`,
+            {
+                method: "PATCH",
+                body: JSON.stringify(taskDate),
+            }
+        );
+    } else {
+        res = await authFetch("/api/tasks/", {
+            method: "POST",
+            body: JSON.stringify(taskDate),
+        });
+    }
 
     if (res.ok) {
-        document.getElementById("task-form").reset();
+
+        exitEditMode();
+
         loadTasks();
     }
+}
+
+
+// btn処理
+function enterEditMode() {
+
+    document.getElementById("submit-btn")
+        .textContent = "更新";
+    
+    document.getElementById("cancel-edit-btn")
+        .hidden = false;
+}
+
+function exitEditMode() {
+    editingTaskId = null;
+
+    document.getElementById("task-form").reset();
+
+    document.getElementById("submit-btn")
+        .textContent = "作成";
+    
+    document.getElementById("cancel-edit-btn")
+        .hidden = true;
 }
 
 
