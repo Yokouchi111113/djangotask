@@ -47,6 +47,9 @@ function renderTasks(tasks) {
                 <button onclick="startEdit(${task.id})">
                     編集
                 </button>
+                <button onclick="deleteTask(${task.id})">
+                    削除
+                </button>
             </div>
         `;
     });
@@ -160,8 +163,32 @@ async function createTask(e) {
         exitEditMode();
 
         loadTasks();
+    } else {
+        console.error(
+            "更新失敗",
+            res.status
+        );
     }
 }
+
+// 削除
+async function deleteTask(taskId) {
+    const res = await authFetch(
+        `/api/tasks/${taskId}/`,
+        {
+            method: "DELETE",
+        }
+    );
+
+    if (!confirm("削除しますか？")) {
+    return;
+    }
+
+    if (res.ok) {
+        loadTasks();
+    }
+}
+
 
 
 // btn処理
