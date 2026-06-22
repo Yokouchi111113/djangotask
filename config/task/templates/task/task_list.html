@@ -9,7 +9,7 @@
     <input id="search" type="search" name="q"
            placeholder="タスク検索">
 
-    <input id="due-within" type="number"
+    <input id="due-within" type="number" placeholder="期限検索"
            name="due_within" min="0">
 
     <button type="submit">検索</button>
@@ -18,11 +18,16 @@
 
 
 <form id="task-form">
-    <input type="text" id="title" placeholder="タイトル" required>
-    <textarea id="description" placeholder="詳細を記載してください"></textarea>
-    <input type="date" id="due_date">
-    <button id="submit-btn" type="submit">作成</button>
-    <button id="cancel-edit-btn" type="button" hidden>キャンセル</button>
+    <input type="text" id="title" name="title" placeholder="タイトル" required>
+    <textarea id="description" name="description" placeholder="詳細を記載してください"></textarea>
+    <input type="date" id="due_date" name="due_date">
+    <select id="status" name="status">
+            <option value="todo">未着手</option>
+            <option value="doing">進行中</option>
+            <option value="done">完了</option>
+    </select>
+    <button id="submit-btn" name="submit-btn" type="submit">作成</button>
+    <button id="cancel-edit-btn" name="cancel-edit-btn" type="button" hidden>キャンセル</button>
 </form>
 
 

@@ -40,16 +40,23 @@ function renderTasks(tasks) {
     tasks.forEach(task => {
         taskList.innerHTML += `
             <div class="task">
-                <h3>${task.title}</h3>
-                <p>${task.description}</p>
+                <h3 class="task-title"title="${task.title}">
+                    ${task.title}
+                </h3>
                 <p>${task.status}</p>
-                <p>${task.due_date}</p>
-                <button onclick="startEdit(${task.id})">
+                <p>期限: ${task.due_date || "期限なし"}</p>
+                <details>
+                    <summary>詳細情報</summary>
+                    <p>${task.description}</p>
+                </details>
+                <div class="button">
+                <button onclick="startEdit(${task.id})" name="startEdit">
                     編集
                 </button>
-                <button onclick="deleteTask(${task.id})">
+                <button onclick="deleteTask(${task.id})" name="deleteTask">
                     削除
                 </button>
+                </div>
             </div>
         `;
     });
@@ -113,8 +120,11 @@ function startEdit(taskId) {
     document.getElementById("description").value =
         task.description;
 
+    document.getElementById("status").value =
+        task.status;    
+
     document.getElementById("due_date").value =
-        task.due_date || "";
+        task.due_date || null;
 
     editingTaskId = task.id;
 
@@ -131,6 +141,9 @@ async function createTask(e) {
 
     const description =
         document.getElementById("description").value;
+
+    const status =
+        document.getElementById("status").value;
     
     const due_date = 
         document.getElementById("due_date").value;
@@ -138,7 +151,8 @@ async function createTask(e) {
     const taskDate = {
         title,
         description,
-        due_date,
+        status,
+        due_date: due_date || null,
     };
 
     let res;
@@ -164,10 +178,12 @@ async function createTask(e) {
 
         loadTasks();
     } else {
+        const errorData = await res.json();
         console.error(
             "更新失敗",
             res.status
         );
+        console.error(errorData);
     }
 }
 
