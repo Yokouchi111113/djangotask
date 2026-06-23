@@ -6,6 +6,14 @@ from django.utils import timezone
 
 class TaskSerializer(serializers.ModelSerializer):
 
+    status_display = serializers.CharField(
+        source="get_status_display",
+        read_only=True
+    )
+
+    days_until_due = serializers.ReadOnlyField()
+
+
     class Meta:
         model = Task
         fields = '__all__'

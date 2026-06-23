@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", exitEditMode);
 });    
 
+
 // 表示
 function renderTasks(tasks) {
     currentTasks = tasks;
@@ -36,19 +37,32 @@ function renderTasks(tasks) {
     return;
     }
 
+    
+    
 
     tasks.forEach(task => {
+
+        let dueText = "";
+
+        if (task.days_until_due > 0) {
+            dueText = `残り ${task.days_until_due} 日`;
+        } else if (task.days_until_due === 0) {
+            dueText = "今日まで";
+        } else if (task.days_until_due !== null) {
+            dueText = `${Math.abs(task.days_until_due)} 日超過`;
+        }
+
         taskList.innerHTML += `
             <div class="task">
-                <h3 class="task-title"title="${task.title}">
+                <h3 class="task-title" title="${task.title}">
                     ${task.title}
                 </h3>
-                <p>${task.status}</p>
+                <p class="task-description" title="${task.description}">
+                    ${task.description}
+                </p>
+                <p>${task.status_display}</p>
                 <p>期限: ${task.due_date || "期限なし"}</p>
-                <details>
-                    <summary>詳細情報</summary>
-                    <p>${task.description}</p>
-                </details>
+                <p>${dueText}</p>
                 <div class="button">
                 <button onclick="startEdit(${task.id})" name="startEdit">
                     編集

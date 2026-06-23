@@ -75,10 +75,12 @@ header {
 #task-form {
     display: flex;
     flex-direction: column;
-    width: 300px;
+    justify-content: left;
+    flex: 0 0 300px;
     gap: 20px;
     height: 300px;
     position: sticky;
+    top: 20px;
     background-color: #f8f9fa;
     padding: 15px;
     border: 1px solid #ddd;
@@ -94,8 +96,15 @@ header {
 /*task-list*/
 #task-list {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    gap: 30px;
     flex-wrap: wrap;
+    flex: 1;
+}
+
+.location {
+    display: flex;
+
 }
 
 .task {
@@ -107,33 +116,53 @@ header {
     padding: 20px;
     width: 250px;
     height: 250px;
-    /* カード内のレイアウト調整 */
     overflow: hidden;
-    position: relative;    /* ケバブメニューの基準用 */
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 .task h3 {
+    font-weight: normal;
     display: -webkit-box;
     line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-wrap: break-word;
+    border-bottom: 1px solid rgb(54, 51, 51);
 }
 
-.task details {
-    font-size: 0.9rem;
-    color: #555;
-    flex-grow: 1;
-    overflow-y: auto;
+.task p {
+    font-weight: normal;
+    margin: 5px;
+    display: -webkit-box;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     word-wrap: break-word;
-    white-space: pre-wrap;
-    max-height: 150px;
-    display: block;
+}
+.task-description {
+    font-size: 0.9rem;
+    color: #666;
 }
 
 .button {
     display: flex;
     justify-content: center;
     gap: 40px;
+}
+.button button {
+    padding: 6px 16px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+}
+
+
+.search {
+    display: flex;
+    justify-content: center;
+}
+#search-form {
+    padding: 10px;
 }
