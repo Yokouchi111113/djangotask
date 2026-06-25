@@ -79,21 +79,36 @@ function renderTasks(tasks) {
 
 // 取得
 async function loadTasks() {
-    const res = await authFetch("/api/tasks/");
-    
 
-    if (res.status === 401) {
-        localStorage.removeItem("access");
-        localStorage.removeItem("refresh");
-        location.href = "/signin/";
-        return;
+    try {
+        const res = await authFetch("/api/tasks/");
+
+        if (res.status === 401) {
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            location.href = "/signin/";
+            return;
+        }
+
+        if (!res.ok) {
+            throw new Error(
+                `タスク取得失敗: ${res.status}`
+            );
+        }
+
+        const tasks = await res.json();
+        renderTasks(tasks);
+
+        document.getElementById("message")
+            .textContent = "";
+
+    } catch (error) {
+        console.error(error);
+
+        document.getElementById("message")
+            .textContent =
+                "タスクの取得に失敗しました";
     }
-
-
-    const taskList = document.getElementById("task-list");
-    const tasks = await res.json();
-    renderTasks(tasks);
-
 }
 
 
@@ -101,24 +116,41 @@ async function loadTasks() {
 async function searchTasks(e) {
     e.preventDefault();
 
-    const q = document.getElementById("search").value;
-    const dueWithin =
-        document.getElementById("due-within").value;
+    
+        const q = document.getElementById("search").value;
+        const dueWithin =
+            document.getElementById("due-within").value;
 
-    let url = "/api/tasks/?";
+        let url = "/api/tasks/?";
 
-    if (q) {
-        url += `q=${encodeURIComponent(q)}&`;
+        if (q) {
+            url += `q=${encodeURIComponent(q)}&`;
+        }
+
+        if (dueWithin) {
+            url += `due_within=${dueWithin}`;
+        }
+
+    try {   
+        const res = await authFetch(url);
+
+        if (!res.ok) {
+            throw new Error(
+                `検索失敗: ${res.status}`
+            );
+        }
+        
+        const tasks = await res.json();
+
+        renderTasks(tasks);
+
+    } catch (error) {
+        console.error(error);
+
+        document.getElementById("message")
+            .textContent =
+                "検索に失敗しました";
     }
-
-    if (dueWithin) {
-        url += `due_within=${dueWithin}`;
-    }
-
-    const res = await authFetch(url);
-    const tasks = await res.json();
-
-    renderTasks(tasks);
 }
 
 
@@ -143,6 +175,10 @@ function startEdit(taskId) {
     editingTaskId = task.id;
 
     enterEditMode();
+
+    if (!task) {
+    return;
+}
 }
 
 
@@ -171,51 +207,69 @@ async function createTask(e) {
 
     let res;
 
-    if (editingTaskId !== null) {
-        res = await authFetch(
-            `/api/tasks/${editingTaskId}/`,
-            {
-                method: "PATCH",
+    try {
+        if (editingTaskId !== null) {
+            res = await authFetch(
+                `/api/tasks/${editingTaskId}/`,
+                {
+                    method: "PATCH",
+                    body: JSON.stringify(taskDate),
+                }
+            );
+        } else {
+            res = await authFetch("/api/tasks/", {
+                method: "POST",
                 body: JSON.stringify(taskDate),
-            }
-        );
-    } else {
-        res = await authFetch("/api/tasks/", {
-            method: "POST",
-            body: JSON.stringify(taskDate),
-        });
-    }
+            });
+        }
 
-    if (res.ok) {
+        if (!res.ok) {
+            throw new Error(
+                `保存失敗: ${res.status}`
+            );
+        }
 
         exitEditMode();
 
-        loadTasks();
-    } else {
-        const errorData = await res.json();
-        console.error(
-            "更新失敗",
-            res.status
-        );
-        console.error(errorData);
-    }
+        await loadTasks();
+
+        } catch (error) {
+            console.error(error);
+
+            document.getElementById("message")
+                .textContent =
+                    "タスクの保存に失敗しました";
+        }
 }
 
 // 削除
 async function deleteTask(taskId) {
-    const res = await authFetch(
-        `/api/tasks/${taskId}/`,
-        {
-            method: "DELETE",
+    try {
+        if (!confirm("削除しますか？")) {
+        return;
         }
-    );
 
-    if (!confirm("削除しますか？")) {
-    return;
-    }
+        const res = await authFetch(
+            `/api/tasks/${taskId}/`,
+            {
+                method: "DELETE",
+            }
+        );
 
-    if (res.ok) {
-        loadTasks();
+        if (!res.ok) {
+            throw new Error(
+                `削除失敗: ${res.status}`
+            );
+        }
+
+        await loadTasks();
+
+    } catch (error) {
+        console.error(error);
+
+        document.getElementById("message")
+            .textContent =
+                "タスクの削除に失敗しました";
     }
 }
 
@@ -242,25 +296,3 @@ function exitEditMode() {
     document.getElementById("cancel-edit-btn")
         .hidden = true;
 }
-
-
-
-
-
-
-
-// CSRF取得
-        function getCookie(name) {
-          let cookieValue = null;
-          if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let cookie of cookies) {
-              cookie = cookie.trim();
-              if (cookie.startsWith(name + '=')) {
-                cookieValue = decodeURIComponent(cookie.slice(name.length + 1));
-                break;
-              }
-            }
-          }
-          return cookieValue;
-        }
