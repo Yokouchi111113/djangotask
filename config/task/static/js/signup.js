@@ -18,30 +18,38 @@ async function signup(e) {
         "signup-password2"
     ).value;
 
-    const res = await fetch("/api/signup/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            email: email,
-            display_name: displayName,
-            password1: password1,
-            password2: password2,
-        }),
-    });
-
     const message = document.getElementById("message");
 
-    if (!res.ok) {
-        const data = await res.json();
-        message.textContent = JSON.stringify(data);
-        return;
+    try{
+        const res = await fetch("/api/signup/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email,
+                display_name: displayName,
+                password1: password1,
+                password2: password2,
+            }),
+        });
+
+        if (!res.ok) {
+            const data = await res.json();
+            message.textContent = 
+                Object.values(data).flat().join(" ");
+            return;
+        }
+
+        message.textContent = "登録成功しました";
+
+        setTimeout(() => {
+            location.href = "/signin/";
+        }, 1000);
+    } catch (error) {
+        console.error(error);
+
+        message.textContent =
+            "通信エラーが発生しました";
     }
-
-    message.textContent = "登録成功しました";
-
-    setTimeout(() => {
-        location.href = "/signin/";
-    }, 1000);
 }

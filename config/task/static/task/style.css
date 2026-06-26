@@ -1,7 +1,5 @@
 /* base.html */
 
-
-
 header {
     display: flex;
     align-items: center;
@@ -43,6 +41,13 @@ header {
     width: 100%;
     box-sizing: border-box;
 }
+
+.signup-link {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
 
 /*signup.html*/
 

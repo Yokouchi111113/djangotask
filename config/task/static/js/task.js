@@ -224,9 +224,15 @@ async function createTask(e) {
         }
 
         if (!res.ok) {
-            throw new Error(
-                `保存失敗: ${res.status}`
-            );
+            const data = await res.json();
+
+            document.getElementById("message")
+                .textContent =
+                Object.values(data)
+                    .flat()
+                    .join(" ");
+
+            return;
         }
 
         exitEditMode();
