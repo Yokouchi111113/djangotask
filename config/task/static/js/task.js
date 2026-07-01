@@ -38,8 +38,6 @@ function renderTasks(tasks) {
     }
 
     
-    
-
     tasks.forEach(task => {
 
         let dueText = "";
