@@ -1,0 +1,41 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+    
+
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  playwright:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      PLAYWRIGHT_BASE_URL: http://web:8000
+      CI: "true"
+    depends_on:
+      - web
+    working_dir: /app/config
+    command: npx playwright test
+
+volumes:
+  postgres_data:

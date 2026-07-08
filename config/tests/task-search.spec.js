@@ -44,6 +44,7 @@ test('該当するタスクが存在しない', async ({ page }, testInfo) => {
   await createTask(page, title);
   await expect(page.getByText(title)).toBeVisible();
   await createTask(page, titleB);
+  await expect(page.getByText(titleB)).toBeVisible();
   await page.getByRole('searchbox', { name: 'タスク検索' }).fill('Java');
   await page.getByRole('button', { name: '検索' }).click();
   await expect(page.locator('.task')).toHaveCount(0);
