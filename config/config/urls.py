@@ -17,11 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path("api/", include("accounts.api_urls")),
     path("api/", include("task.api_urls")),
-
+    
+    path("", RedirectView.as_view(url="/signin/", permanent=False)),
     path("", include("accounts.urls")),
     path("", include("task.urls")),
     path('task-control-admin/', admin.site.urls),
