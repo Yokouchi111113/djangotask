@@ -157,6 +157,7 @@ http://localhost:8000
 ```
 
 📂 Directory Structure
+```
 djangotask/
 ├── config/                 # Django project
 │   ├── accounts/           # User authentication
