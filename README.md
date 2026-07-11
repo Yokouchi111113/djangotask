@@ -164,7 +164,7 @@ djangotask/
 │   ├── task/               # Task management app
 │   │     └─tests/          # pytest
 │   ├── templates/          # HTML templates
-│   ├── e2e/              # Playwright tests
+│   ├── e2e/                # Playwright tests
 │   ├── config/             # Django settings
 │   ├── manage.py
 │   ├── package.json
