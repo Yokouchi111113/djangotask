@@ -168,6 +168,7 @@ djangotask/
 ├── requirements.txt
 ├── .env.example
 └── README.md
+```
 
 💡 Highlights
 - Django REST Frameworkを用いてREST APIを設計
