@@ -1,6 +1,7 @@
 # Django Task Management
 
 📌 Overview（アプリ概要）
+
 Django REST Frameworkを用いてREST APIを構築し、JWT認証を実装したタスク管理アプリです。
 
 Docker Compose・PostgreSQLを用いた開発環境を構築しています。
