@@ -2,7 +2,7 @@
 
 Python • Django • Django REST Framework • PostgreSQL • Docker • Playwright • pytest
 
-📌 Overview（アプリ概要）
+📌 Overview
 
 Django REST Frameworkを用いてREST APIを構築し、JWT認証を実装したタスク管理アプリです。
 
@@ -10,7 +10,7 @@ Docker Compose・PostgreSQLを用いた開発環境を構築しています。
 
 また、pytestによるAPIテストとPlaywrightによるE2Eテストを実装し、主な機能の動作を確認しています。
 
-🛠️ Tech Stack（使用技術）
+🛠️ Tech Stack
 | 分類 | 技術 |
 |------|------|
 | 言語 | Python, JavaScript, HTML, CSS |
@@ -21,7 +21,7 @@ Docker Compose・PostgreSQLを用いた開発環境を構築しています。
 | 開発環境 | Docker, Docker Compose |
 | パッケージ管理 | pip, npm |
 
-✨ Features（機能一覧）
+✨ Features
 - ユーザー登録
 - ログイン/ログアウト
 - タスクの作成・一覧表示・編集・削除（CRUD）
@@ -31,10 +31,10 @@ Docker Compose・PostgreSQLを用いた開発環境を構築しています。
 - 期限日の設定
 - ユーザーごとのタスク管理
 
-🖼️ Screenshots（画面）
+🖼️ Screenshots
 
 
-🏗️ System Architecture（システム構成図）
+🏗️ System Architecture
 ````markdown
 ```mermaid
 graph TD
@@ -55,7 +55,7 @@ graph TD
     Playwright --> Browser
 ```
 
-🗄️ ER Diagram（ER図）
+🗄️ ER Diagram
 ```mermaid
 erDiagram
 
@@ -80,7 +80,7 @@ erDiagram
     }
 ```
 
-🧪 Testing（テスト）
+🧪 Testing
 ### APIテスト
 
 - pytestによるAPIテストを実装
@@ -105,7 +105,7 @@ erDiagram
 　　```bash
 　　docker compose run --rm playwright
 
-🚀 Getting Started（セットアップ）
+🚀 Getting Started
 ### 前提条件
 
 - Docker
@@ -156,7 +156,7 @@ docker compose exec web python manage.py migrate
 http://localhost:8000
 ```
 
-📂 Directory Structure（ディレクトリ構成）
+📂 Directory Structure
 djangotask/
 ├── config/                 # Django project
 │   ├── accounts/           # User authentication
@@ -175,7 +175,7 @@ djangotask/
 └── README.md
 ```
 
-💡 Highlights (工夫した点)
+💡 Highlights
 - Django REST Frameworkを用いてREST APIを設計
 - JWT認証（SimpleJWT）による認証機能を実装
 - Docker Composeで開発・テスト環境を構築
@@ -183,7 +183,7 @@ djangotask/
 - PlaywrightによるE2Eテストを実装し、Chromium・Firefox・WebKitの3ブラウザで動作を確認
 - Playwrightの共通処理（サインアップ・サインイン・タスク作成など）を関数化し、保守性を向上
 
-🔮 Future Improvements（今後の改善予定）
+🔮 Future Improvements
 - GitHub Actionsを用いたCIの構築（pytest・Playwrightの自動実行）
 - 本番環境へのデプロイ
 - UI/UXの改善
