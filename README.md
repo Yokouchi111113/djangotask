@@ -171,7 +171,7 @@ djangotask/
 └── README.md
 ```
 
-💡 Highlights
+💡 Highlights (工夫した点)
 - Django REST Frameworkを用いてREST APIを設計
 - JWT認証（SimpleJWT）による認証機能を実装
 - Docker Composeで開発・テスト環境を構築
