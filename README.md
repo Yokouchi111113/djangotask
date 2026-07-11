@@ -1,10 +1,13 @@
 # Django Task Management
 
+Python • Django • Django REST Framework • PostgreSQL • Docker • Playwright • pytest
+
 📌 Overview（アプリ概要）
 
 Django REST Frameworkを用いてREST APIを構築し、JWT認証を実装したタスク管理アプリです。
 
 Docker Compose・PostgreSQLを用いた開発環境を構築しています。
+
 また、pytestによるAPIテストとPlaywrightによるE2Eテストを実装し、主な機能の動作を確認しています。
 
 🛠️ Tech Stack（使用技術）
@@ -93,7 +96,7 @@ erDiagram
 
 - Dockerコンテナ上でpytestおよびPlaywrightを実行可能
 
-　　実行コマンド
+　　### 実行コマンド
 
 　　```bash
 　　docker compose exec web pytest
@@ -151,6 +154,7 @@ docker compose exec web python manage.py migrate
 
 ```
 http://localhost:8000
+```
 
 📂 Directory Structure（ディレクトリ構成）
 djangotask/
@@ -180,7 +184,6 @@ djangotask/
 - Playwrightの共通処理（サインアップ・サインイン・タスク作成など）を関数化し、保守性を向上
 
 🔮 Future Improvements（今後の改善予定）
-- GitHub Actionsを用いたCIの構築
-- テストの自動実行
+- GitHub Actionsを用いたCIの構築（pytest・Playwrightの自動実行）
 - 本番環境へのデプロイ
 - UI/UXの改善
