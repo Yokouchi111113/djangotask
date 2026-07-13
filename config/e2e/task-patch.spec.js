@@ -11,7 +11,7 @@ test('認証済みユーザーがタスクを編集できる', async ({ page }, 
   const email = `test-${testInfo.project.name}-${Date.now()}@example.com`;
   await signup(page, email, DEFAULT_PASSWORD);
   await signin(page, email, DEFAULT_PASSWORD);
-  await expect(page.getByRole('link', { name: 'signout' })).toBeVisible();
+  await expect(page).toHaveURL(/\/tasks\/$/);
   await createTask(page, title);
   await expect(page.getByText(title)).toBeVisible();
   await page.getByRole('button', { name: '編集' }).click();
@@ -36,7 +36,7 @@ test('タイトルが２文字以下では編集できない', async ({ page }, 
   const email = `test-${testInfo.project.name}-${Date.now()}@example.com`;
   await signup(page, email, DEFAULT_PASSWORD);
   await signin(page, email, DEFAULT_PASSWORD);
-  await expect(page.getByRole('link', { name: 'signout' })).toBeVisible();
+  await expect(page).toHaveURL(/\/tasks\/$/);
   await createTask(page, title);
   await expect(page.getByText(title)).toBeVisible();
   await page.getByRole('button', { name: '編集' }).click();
@@ -49,7 +49,7 @@ test('タイトルが100文字を超えるとタスクを編集できない', as
   const email = `test-${testInfo.project.name}-${Date.now()}@example.com`;
   await signup(page, email, DEFAULT_PASSWORD);
   await signin(page, email, DEFAULT_PASSWORD);
-  await expect(page.getByRole('link', { name: 'signout' })).toBeVisible();
+  await expect(page).toHaveURL(/\/tasks\/$/);
   await createTask(page, title);
   await expect(page.getByText(title)).toBeVisible();
   await page.getByRole('button', { name: '編集' }).click();
@@ -63,7 +63,7 @@ test('過去の日付ではタスクを編集できない', async ({ page }, tes
   const email = `test-${testInfo.project.name}-${Date.now()}@example.com`;
   await signup(page, email, DEFAULT_PASSWORD);
   await signin(page, email, DEFAULT_PASSWORD);
-  await expect(page.getByRole('link', { name: 'signout' })).toBeVisible();
+  await expect(page).toHaveURL(/\/tasks\/$/);
   await createTask(page, title);
   await expect(page.getByText(title)).toBeVisible();
   await page.getByRole('button', { name: '編集' }).click();
