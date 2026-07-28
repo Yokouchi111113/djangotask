@@ -104,6 +104,7 @@ erDiagram
 　　
 　　```bash
 　　docker compose run --rm playwright
+    ```
 
 🚀 Getting Started
 ### 前提条件
