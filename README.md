@@ -35,7 +35,7 @@ Docker Compose・PostgreSQLを用いた開発環境を構築しています。
 ![トップページ](images/top.png)
 
 🏗️ System Architecture
-````markdown
+
 ```mermaid
 graph TD
 
@@ -53,7 +53,6 @@ graph TD
 
     Playwright["🎭 Playwright"]
     Playwright --> Browser
-```
 
 🗄️ ER Diagram
 ```mermaid
