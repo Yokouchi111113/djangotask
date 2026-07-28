@@ -37,7 +37,7 @@ Docker Compose・PostgreSQLを用いた開発環境を構築しています。
 🏗️ System Architecture
 
 ```mermaid
-graph TD
+graph LR
 
     User["👤 User"]
 
