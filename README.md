@@ -53,7 +53,7 @@ graph TD
 
     Playwright["🎭 Playwright"]
     Playwright --> Browser
-    ```
+```
 🗄️ ER Diagram
 ```mermaid
 erDiagram
