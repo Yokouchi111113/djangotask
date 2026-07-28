@@ -96,13 +96,13 @@ erDiagram
 - Dockerコンテナ上でpytestおよびPlaywrightを実行可能
 
 　　### 実行コマンド
-
-　　```bash
-　　docker compose exec web pytest
-　　```
+   
+    ```bash
+    docker compose exec web pytest
+    ```
 　　
-　　```bash
-　　docker compose run --rm playwright
+    ```bash
+    docker compose run --rm playwright
     ```
 
 🚀 Getting Started
