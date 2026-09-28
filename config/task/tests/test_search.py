@@ -112,7 +112,7 @@ def test_search_by_q_none(
     assert res.status_code == 200
     assert len(res.data) == 2
 
-def test_search_by_q_none(
+def test_search_only_returns_own_tasks(
     auth_client,
     user,
     user_b,
