@@ -35,9 +35,9 @@ Docker Compose・PostgreSQLを用いた開発環境を構築しています。
 ![トップページ](images/top.png)
 
 🏗️ System Architecture
-````markdown
+
 ```mermaid
-graph TD
+graph LR
 
     User["👤 User"]
 
@@ -54,7 +54,6 @@ graph TD
     Playwright["🎭 Playwright"]
     Playwright --> Browser
 ```
-
 🗄️ ER Diagram
 ```mermaid
 erDiagram
@@ -81,6 +80,18 @@ erDiagram
 ```
 
 🧪 Testing
+### テスト設計・テストケース
+
+- 機能・テスト観点・テスト技法を整理したテスト設計を作成
+- テスト設計に基づき、正常系・異常系・境界値などのテストケースを作成
+- テストケースを実行し、実行結果と判定を記録
+
+### 探索的テスト・不具合
+
+- テストケースに含まれていない操作や組み合わせを探索的に確認
+- 仕様として想定していなかった挙動を発見
+- 発見した問題について、再現手順・期待結果・実際の結果を整理
+
 ### APIテスト
 
 - pytestによるAPIテストを実装
@@ -92,18 +103,29 @@ erDiagram
 - PlaywrightによるE2Eテストを実装
 - サインアップ、サインイン、タスクCRUD、キーワード検索・期限検索を検証
 - 28件のテストシナリオをChromium・Firefox・WebKitの3ブラウザで実行
+
+### 自動テストとの対応
+
+手動テストケースと自動テストの対応関係を整理し、
+どのテストケースを自動化しているかを確認できるようにした。
+
+- Playwright：画面操作を中心としたE2Eテスト
+- pytest：API・認証認可・バックエンド処理を中心としたテスト
+- 一部のテストケースは手動確認として残し、自動テストとの対応を整理
+
 ### 実行環境
 
 - Dockerコンテナ上でpytestおよびPlaywrightを実行可能
 
 　　### 実行コマンド
-
-　　```bash
-　　docker compose exec web pytest
-　　```
+   
+    ```bash
+    docker compose exec web pytest
+    ```
 　　
-　　```bash
-　　docker compose run --rm playwright
+    ```bash
+    docker compose run --rm playwright
+    ```
 
 🚀 Getting Started
 ### 前提条件
